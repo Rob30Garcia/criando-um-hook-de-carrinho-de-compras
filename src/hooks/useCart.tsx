@@ -68,9 +68,13 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const removeProduct = (productId: number) => {
     try {
-      // TODO
+      const newCart = cart.filter(product => product.id !== productId);
+
+      setCart(newCart);
+
+      localStorage.setItem("@RocketShoes:cart", JSON.stringify(newCart));
     } catch {
-      // TODO
+      toast.error('Erro na remoção do produto');
     }
   };
 
@@ -105,7 +109,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       localStorage.setItem("@RocketShoes:cart", JSON.stringify(newCart));
       
     } catch {
-      toast.error('Erro na adição do produto');
+      toast.error('Erro na alteração de quantidade do produto');
     }
   };
 
