@@ -37,14 +37,14 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       const productAlreadyExists = cart.find(product => product.id === productId);
      
       if(productAlreadyExists) {
-        const { data } = await api.get(`/stock/${productId}`);
+        const { data } = await api.get(`/stock/${productId}`);             
 
-        const amount = productAlreadyExists.amount;        
-
-        if(amount === data.amount) {
+        if(productAlreadyExists.amount === data.amount) {
           toast.error('Quantidade solicitada fora de estoque');
           return;
         }
+
+        const amount = productAlreadyExists.amount + 1;  
 
         updateProductAmount({ productId, amount });
         return;
@@ -81,8 +81,9 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     try {
       const { data } = await api.get(`/stock/${productId}`);
 
-      if(amount === data.amount) {
+      if(amount > data.amount) {
         toast.error('Quantidade solicitada fora de estoque');
+        return;
       }
 
       const newCart = cart.map(product => {
@@ -92,7 +93,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
             title: product.title,
             price: product.price,
             image: product.image,
-            amount: product.amount + 1
+            amount
           }
         } else {
           return product;
